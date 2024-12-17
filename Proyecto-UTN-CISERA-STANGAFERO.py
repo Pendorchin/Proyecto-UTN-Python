@@ -424,20 +424,24 @@ if archivo is not None:
                     st.download_button("Descargar gráfica de Potencia", buf, "grafica_potencia.png", "image/png")
 
             
-#boton mas informacion
+# Estado de la sesión para manejar la visibilidad de la información
 if 'mostrar_info' not in st.session_state:
     st.session_state.mostrar_info = False
 
+# Botón para mostrar/ocultar la información
 if st.button("Más información de Nosotros"):
     st.session_state.mostrar_info = not st.session_state.mostrar_info
 
+# Mostrar la información adicional si el estado 'mostrar_info' es verdadero
 if st.session_state.mostrar_info:
-    st.text_area(
-        label="Información adicional",
-        value="""
-        Desarrolladores: Cisera Santino y Stangafero Eric.
-        Correo de contacto: santinociseraa@gmail.com / edstangafe@gmail.com
-        Número de contacto: 3425328666 / 3425950884
-        """,
-        height=150
+    st.markdown(
+        """
+        <div style="padding: 10px; background-color: #f4f4f9; border-radius: 5px; border: 1px solid #ccc;">
+            <h4 style="color: #333;">Información adicional:</h4>
+            <p><strong>Desarrolladores:</strong> Cisera Santino y Stangafero Eric</p>
+            <p><strong>Correo de contacto:</strong> <a href="mailto:santinociseraa@gmail.com">santinociseraa@gmail.com</a> / <a href="mailto:edstangafe@gmail.com">edstangafe@gmail.com</a></p>
+            <p><strong>Número de contacto:</strong> 3425328666 / 3425950884</p>
+        </div>
+        """, 
+        unsafe_allow_html=True
     )
