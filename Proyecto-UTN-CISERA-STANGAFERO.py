@@ -437,10 +437,10 @@ if st.session_state.mostrar_info:
     st.markdown(
         """
         <div style="padding: 10px; background-color: #f4f4f9; border-radius: 5px; border: 1px solid #ccc;">
-            <h4 style="color: black;">Información adicional:</h4>
-            <p><strong>Desarrolladores:</strong> Cisera Santino y Stangafero Eric</p>
-            <p><strong>Correo de contacto:</strong> <a href="mailto:santinociseraa@gmail.com">santinociseraa@gmail.com</a> / <a href="mailto:edstangafe@gmail.com">edstangafe@gmail.com</a></p>
-            <p><strong>Número de contacto:</strong> 3425328666 / 3425950884</p>
+            <h4 style="color: #333;">Información adicional:</h4>
+            <p style="color: #333;"><strong>Desarrolladores:</strong> Cisera Santino y Stangafero Eric</p>
+            <p style="color: #333;"><strong>Correo de contacto:</strong> <a href="mailto:santinociseraa@gmail.com" style="color: #1e90ff;">santinociseraa@gmail.com</a> / <a href="mailto:edstangafe@gmail.com" style="color: #1e90ff;">edstangafe@gmail.com</a></p>
+            <p style="color: #333;"><strong>Número de contacto:</strong> 3425328666 / 3425950884</p>
         </div>
         """, 
         unsafe_allow_html=True
