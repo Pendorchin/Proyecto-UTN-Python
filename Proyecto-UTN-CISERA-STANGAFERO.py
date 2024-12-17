@@ -14,7 +14,7 @@ st.title("Simulador de Generación Fotovoltaica")
 por un generador fotovoltaico, basado en el modelo matemático descrito en el proyecto."""
 
 st.markdown("### Ecuaciones Matemáticas del Proyecto")
-st.latex(r"P \, [kW] = N \cdot \frac{G}{G_{std}} \cdot P_{pico} \cdot \left[ 1 + k_p \cdot (T_c - T_r) \right] \cdot \eta \cdot 10^{-3}")
+st.latex(r"P \, (kW) = N \cdot \frac{G}{G_{std}} \cdot P_{pico} \cdot \left[ 1 + k_p \cdot (T_c - T_r) \right] \cdot \eta \cdot 10^{-3}")
 st.latex(r"E \, [kWh] = \int P(t) \, dt")
 st.latex(r"\eta_{sistema} = \eta_{panel} \cdot \eta_{inversor} \cdot \eta_{cables}")
 st.latex(r"T_c = T_{a} + \frac{G}{G_{std}} \cdot \Delta T")
@@ -72,7 +72,7 @@ mu = st.sidebar.slider("Porcentaje de umbral mínimo %",
                             step=1.0)
 
 Pmin = mu / 100 * Pinv
-st.sidebar.text(f"Potencia del Inversor Mínima: {Pmin}[kW]")
+st.sidebar.text(f"Potencia del Inversor Mínima: {Pmin}(kW)")
 
 # Cálculo de la potencia generada
 P = N * (Gstd / Pinv) * Ppico * (1 + kp * (Tc - Tr)) * eta * 1e-3
@@ -113,16 +113,16 @@ if archivo is not None:
     #archivo_html = archivo.to_html(index=False)
     #st.markdown(f'<div style="display: flex; justify-content: center;">{archivo_html}</div>', unsafe_allow_html=True)
 
-archivo['Tc'] = archivo['Temperatura (°C)'] + 0.031 * archivo['Irradiancia (W/m²)']
+archivo['Tc (°C)'] = archivo['Temperatura (°C)'] + 0.031 * archivo['Irradiancia (W/m²)']
 
-# Cálculo de potencia generada [kW]
-archivo['Potencia [kW]'] = (N * (archivo['Irradiancia (W/m²)'] / Gstd) * 
-                            Ppico * (1 + kp * (archivo['Tc'] - Tr)) * eta * 1e-3)
+# Cálculo de potencia generada (kW)
+archivo['Potencia (kW)'] = (N * (archivo['Irradiancia (W/m²)'] / Gstd) * 
+                            Ppico * (1 + kp * (archivo['Tc (°C)'] - Tr)) * eta * 1e-3)
 
 # Aplicar límites a la potencia generada
-archivo['Potencia [kW]'] = np.where(
-    archivo['Potencia [kW]'] <= Pmin, 0,  # Si P <= Pmin -> 0
-    np.where(archivo['Potencia [kW]'] <= Pinv, archivo['Potencia [kW]'], Pinv)
+archivo['Potencia (kW)'] = np.where(
+    archivo['Potencia (kW)'] <= Pmin, 0,  # Si P <= Pmin -> 0
+    np.where(archivo['Potencia (kW)'] <= Pinv, archivo['Potencia (kW)'], Pinv)
 )
 
 st.write("Tabla con valores de Tc y Potencia Calculados:")
@@ -183,15 +183,15 @@ def grafica_potencia(opcion):
     if opcion == 'Por Día':
         # Agrupar por día y calcular la potencia total generada
         archivo['Fecha_Solo'] = archivo['Fecha'].dt.date
-        potencia_total_dia = archivo.groupby('Fecha_Solo')['Potencia [kW]'].sum().reset_index()
+        potencia_total_dia = archivo.groupby('Fecha_Solo')['Potencia (kW)'].sum().reset_index()
         
         # Crear la gráfica de potencia total por día
         fig, ax = plt.subplots(figsize=(12, 6))
-        ax.plot(potencia_total_dia['Fecha_Solo'], potencia_total_dia['Potencia [kW]'], 
+        ax.plot(potencia_total_dia['Fecha_Solo'], potencia_total_dia['Potencia (kW)'], 
                 color='orange', label="Potencia Total", marker="o", markersize=5)
         ax.set_title('Potencia Total Generada por Día', fontsize=16)
         ax.set_xlabel('Fecha', fontsize=14)
-        ax.set_ylabel('Potencia Total [kW]', fontsize=14)
+        ax.set_ylabel('Potencia Total (kW)', fontsize=14)
         ax.grid(True, linestyle='--', alpha=0.6)
         ax.legend(fontsize=12)
         plt.xticks(rotation=45)
@@ -200,19 +200,19 @@ def grafica_potencia(opcion):
     
     elif opcion == 'Por Mes':
         # Agrupar por mes y calcular la potencia total generada
-        potencia_total_mes = archivo.groupby('Mes')['Potencia [kW]'].sum().reset_index()
+        potencia_total_mes = archivo.groupby('Mes')['Potencia (kW)'].sum().reset_index()
         
         # Asegurarnos de que la columna 'Mes' sea un entero
         potencia_total_mes['Mes'] = potencia_total_mes['Mes'].astype(int)
 
         # Crear la gráfica de barras de potencia por mes
         fig, ax = plt.subplots(figsize=(12, 6))
-        ax.bar(potencia_total_mes['Mes'], potencia_total_mes['Potencia [kW]'], color='orange', edgecolor='black')
+        ax.bar(potencia_total_mes['Mes'], potencia_total_mes['Potencia (kW)'], color='orange', edgecolor='black')
         
         # Configurar el título y etiquetas
-        ax.set_title('Potencia Total Generada Mensualmente [kW]', fontsize=16)
+        ax.set_title('Potencia Total Generada Mensualmente (kW)', fontsize=16)
         ax.set_xlabel('Mes', fontsize=14)
-        ax.set_ylabel('Potencia Total [kW]', fontsize=14)
+        ax.set_ylabel('Potencia Total (kW)', fontsize=14)
 
         # Ajustar las etiquetas del eje X para los meses
         ax.set_xticks(range(1, 13))  # Posiciones en el eje X para 12 meses
@@ -279,149 +279,150 @@ with col2:
 if archivo is not None:
     archivo['Fecha'] = pd.to_datetime(archivo['Fecha'])  # Convertir columna 'Fecha' a formato datetime
     
-    # Filtrar solo datos del año 2019
-    archivo_2019 = archivo[archivo['Fecha'].dt.year == 2019]
+    # Filtros de fecha
+    fecha_inicio = st.date_input("Selecciona la fecha de inicio", archivo['Fecha'].min().date())
+    fecha_fin = st.date_input("Selecciona la fecha de fin", archivo['Fecha'].max().date())
     
-    # Si no hay datos de 2019, mostrar mensaje y terminar
-    if archivo_2019.empty:
-        st.error("El archivo no contiene datos de 2019.")
-    else:        
-        # Filtros de fecha
-        fecha_inicio = st.date_input("Selecciona la fecha de inicio", archivo_2019['Fecha'].min().date())
-        fecha_fin = st.date_input("Selecciona la fecha de fin", archivo_2019['Fecha'].max().date())
-
-        # Asegurarse que la fecha de inicio y fin esté en 2019
-        if fecha_inicio.year != 2019 or fecha_fin.year != 2019:
-            st.error("Por favor, selecciona fechas dentro del año 2019.")
-        else:
-            # Filtros de hora
-            hora_inicio = st.slider("Selecciona la hora de inicio", 0, 23, 0)
-            hora_fin = st.slider("Selecciona la hora de fin", 0, 23, 23)
-
-            # Aplicar los filtros solo por fecha y hora
-            archivo_filtrado = archivo_2019[
-                (archivo_2019['Fecha'].dt.date >= fecha_inicio) & 
-                (archivo_2019['Fecha'].dt.date <= fecha_fin) & 
-                (archivo_2019['Fecha'].dt.hour >= hora_inicio) & 
-                (archivo_2019['Fecha'].dt.hour <= hora_fin)
-            ]
-            
-            # Mostrar datos filtrados
-            st.write(f"Datos filtrados de {fecha_inicio} a {fecha_fin}")
-            st.dataframe(archivo_filtrado, width=1500, hide_index=True)
-
-            # Crear opción para graficar según la selección de filtros
-            if not archivo_filtrado.empty:
-                # Función para graficar la temperatura
-                def grafica_temperatura(opcion):
-                    if opcion == 'Por Día':
-                        # Agrupar por día y calcular el promedio de la temperatura
-                        archivo_filtrado['Fecha_Solo'] = archivo_filtrado['Fecha'].dt.date
-                        promedio_por_dia = archivo_filtrado.groupby('Fecha_Solo')['Temperatura (°C)'].mean().reset_index()
-                        promedio_por_dia.columns = ['Fecha', 'Promedio Temperatura (°C)']
-                        
-                        # Crear la gráfica de temperatura
-                        fig, ax = plt.subplots(figsize=(12, 6))
-                        ax.plot(promedio_por_dia['Fecha'], promedio_por_dia['Promedio Temperatura (°C)'], 
-                                color='blue', label="Temperatura", marker="o", markersize=3)
-                        ax.set_title('Promedio de Temperatura por Día', fontsize=16)
-                        ax.set_xlabel('Fecha', fontsize=14)
-                        ax.set_ylabel('Promedio Temperatura (°C)', fontsize=14)
-                        ax.grid(True, linestyle='--', alpha=0.6)
-                        ax.legend(fontsize=12)
-                        plt.xticks(rotation=45)
-                        plt.tight_layout()
-                        return fig
-                    
-                    elif opcion == 'Por Mes':
-                        # Agrupar por mes y calcular el promedio de la temperatura
-                        archivo_filtrado['Mes'] = archivo_filtrado['Fecha'].dt.month
-                        promedio_por_mes = archivo_filtrado.groupby('Mes')['Temperatura (°C)'].mean().reset_index()
-                        
-                        # Crear la gráfica de temperatura por mes
-                        fig, ax = plt.subplots(figsize=(12, 6))
-                        ax.plot(promedio_por_mes['Mes'], promedio_por_mes['Temperatura (°C)'], 
-                                color='blue', label="Temperatura Promedio", marker="o", markersize=5)
-                        ax.set_title('Promedio de Temperatura por Mes', fontsize=16)
-                        ax.set_xlabel('Mes', fontsize=14)
-                        ax.set_ylabel('Temperatura Promedio (°C)', fontsize=14)
-                        ax.grid(True, linestyle='--', alpha=0.6)
-                        ax.legend(fontsize=12)
-                        ax.set_xticks(range(1, 13))
-                        ax.set_xticklabels(['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'], rotation=45)
-                        plt.tight_layout()
-                        return fig
+    # Filtro de temperatura
+    temp_min = archivo['Temperatura (°C)'].min()
+    temp_max = archivo['Temperatura (°C)'].max()
+    temperatura_filtrada = st.slider("Selecciona el rango de temperatura", 
+                                    min_value=float(temp_min), max_value=float(temp_max), 
+                                    value=(float(temp_min), float(temp_max)))
+    
+    # Filtro de irradiancia
+    irrad_min = archivo['Irradiancia (W/m²)'].min()
+    irrad_max = archivo['Irradiancia (W/m²)'].max()
+    irradiancia_filtrada = st.slider("Selecciona el rango de irradiancia", 
+                                     min_value=float(irrad_min), max_value=float(irrad_max), 
+                                     value=(float(irrad_min), float(irrad_max)))
+    
+    # Filtrar los datos según las selecciones de fecha, temperatura e irradiancia
+    archivo_filtrado = archivo[
+        (archivo['Fecha'].dt.date >= fecha_inicio) & 
+        (archivo['Fecha'].dt.date <= fecha_fin) & 
+        (archivo['Temperatura (°C)'] >= temperatura_filtrada[0]) &
+        (archivo['Temperatura (°C)'] <= temperatura_filtrada[1]) &
+        (archivo['Irradiancia (W/m²)'] >= irradiancia_filtrada[0]) &
+        (archivo['Irradiancia (W/m²)'] <= irradiancia_filtrada[1])
+    ]
+    
+    # Mostrar los datos filtrados
+    st.write(f"Datos filtrados de {fecha_inicio} a {fecha_fin}")
+    st.dataframe(archivo_filtrado, width=1500, hide_index=True)
+    
+    # Crear opción para graficar según la selección de filtros
+    if not archivo_filtrado.empty:
+        # Función para graficar la temperatura
+        def grafica_temperatura(opcion):
+            if opcion == 'Por Día':
+                # Agrupar por día y calcular el promedio de la temperatura
+                archivo_filtrado['Fecha_Solo'] = archivo_filtrado['Fecha'].dt.date
+                promedio_por_dia = archivo_filtrado.groupby('Fecha_Solo')['Temperatura (°C)'].mean().reset_index()
+                promedio_por_dia.columns = ['Fecha', 'Promedio Temperatura (°C)']
                 
-                # Función para graficar la potencia total generada
-                def grafica_potencia(opcion):
-                    if opcion == 'Por Día':
-                        # Agrupar por día y calcular la potencia total generada
-                        archivo_filtrado['Fecha_Solo'] = archivo_filtrado['Fecha'].dt.date
-                        potencia_total_dia = archivo_filtrado.groupby('Fecha_Solo')['Potencia [kW]'].sum().reset_index()
-                        
-                        # Crear la gráfica de potencia total por día
-                        fig, ax = plt.subplots(figsize=(12, 6))
-                        ax.plot(potencia_total_dia['Fecha_Solo'], potencia_total_dia['Potencia [kW]'], 
-                                color='orange', label="Potencia Total", marker="o", markersize=5)
-                        ax.set_title('Potencia Total Generada por Día', fontsize=16)
-                        ax.set_xlabel('Fecha', fontsize=14)
-                        ax.set_ylabel('Potencia Total [kW]', fontsize=14)
-                        ax.grid(True, linestyle='--', alpha=0.6)
-                        ax.legend(fontsize=12)
-                        plt.xticks(rotation=45)
-                        plt.tight_layout()
-                        return fig
-                    
-                    elif opcion == 'Por Mes':
-                        # Agrupar por mes y calcular la potencia total generada
-                        potencia_total_mes = archivo_filtrado.groupby('Mes')['Potencia [kW]'].sum().reset_index()
-                        
-                        # Asegurarnos de que la columna 'Mes' sea un entero
-                        potencia_total_mes['Mes'] = potencia_total_mes['Mes'].astype(int)
+                # Crear la gráfica de temperatura
+                fig, ax = plt.subplots(figsize=(12, 6))
+                ax.plot(promedio_por_dia['Fecha'], promedio_por_dia['Promedio Temperatura (°C)'], 
+                        color='blue', label="Temperatura", marker="o", markersize=3)
+                ax.set_title('Promedio de Temperatura por Día', fontsize=16)
+                ax.set_xlabel('Fecha', fontsize=14)
+                ax.set_ylabel('Promedio Temperatura (°C)', fontsize=14)
+                ax.grid(True, linestyle='--', alpha=0.6)
+                ax.legend(fontsize=12)
+                plt.xticks(rotation=45)
+                plt.tight_layout()
+                return fig
+            
+            elif opcion == 'Por Mes':
+                # Agrupar por mes y calcular el promedio de la temperatura
+                archivo_filtrado['Mes'] = archivo_filtrado['Fecha'].dt.month
+                promedio_por_mes = archivo_filtrado.groupby('Mes')['Temperatura (°C)'].mean().reset_index()
+                
+                # Crear la gráfica de temperatura por mes
+                fig, ax = plt.subplots(figsize=(12, 6))
+                ax.plot(promedio_por_mes['Mes'], promedio_por_mes['Temperatura (°C)'], 
+                        color='blue', label="Temperatura Promedio", marker="o", markersize=5)
+                ax.set_title('Promedio de Temperatura por Mes', fontsize=16)
+                ax.set_xlabel('Mes', fontsize=14)
+                ax.set_ylabel('Temperatura Promedio (°C)', fontsize=14)
+                ax.grid(True, linestyle='--', alpha=0.6)
+                ax.legend(fontsize=12)
+                ax.set_xticks(range(1, 13))
+                ax.set_xticklabels(['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'], rotation=45)
+                plt.tight_layout()
+                return fig
 
-                        # Crear la gráfica de barras de potencia por mes
-                        fig, ax = plt.subplots(figsize=(12, 6))
-                        ax.bar(potencia_total_mes['Mes'], potencia_total_mes['Potencia [kW]'], color='orange', edgecolor='black')
-                        
-                        # Configurar el título y etiquetas
-                        ax.set_title('Potencia Total Generada Mensualmente [kW]', fontsize=16)
-                        ax.set_xlabel('Mes', fontsize=14)
-                        ax.set_ylabel('Potencia Total [kW]', fontsize=14)
+        # Función para graficar la potencia total generada
+        def grafica_potencia(opcion):
+            if opcion == 'Por Día':
+                # Agrupar por día y calcular la potencia total generada
+                archivo_filtrado['Fecha_Solo'] = archivo_filtrado['Fecha'].dt.date
+                potencia_total_dia = archivo_filtrado.groupby('Fecha_Solo')['Potencia (kW)'].sum().reset_index()
+                
+                # Crear la gráfica de potencia total por día
+                fig, ax = plt.subplots(figsize=(12, 6))
+                ax.plot(potencia_total_dia['Fecha_Solo'], potencia_total_dia['Potencia (kW)'], 
+                        color='orange', label="Potencia Total", marker="o", markersize=5)
+                ax.set_title('Potencia Total Generada por Día', fontsize=16)
+                ax.set_xlabel('Fecha', fontsize=14)
+                ax.set_ylabel('Potencia Total [kW]', fontsize=14)
+                ax.grid(True, linestyle='--', alpha=0.6)
+                ax.legend(fontsize=12)
+                plt.xticks(rotation=45)
+                plt.tight_layout()
+                return fig
+            
+            elif opcion == 'Por Mes':
+                # Agrupar por mes y calcular la potencia total generada
+                potencia_total_mes = archivo_filtrado.groupby('Mes')['Potencia [kW]'].sum().reset_index()
+                
+                # Asegurarnos de que la columna 'Mes' sea un entero
+                potencia_total_mes['Mes'] = potencia_total_mes['Mes'].astype(int)
 
-                        # Ajustar las etiquetas del eje X para los meses
-                        ax.set_xticks(range(1, 13))  # Posiciones en el eje X para 12 meses
-                        ax.set_xticklabels(['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'], rotation=45)
+                # Crear la gráfica de barras de potencia por mes
+                fig, ax = plt.subplots(figsize=(12, 6))
+                ax.bar(potencia_total_mes['Mes'], potencia_total_mes['Potencia [kW]'], color='orange', edgecolor='black')
+                
+                # Configurar el título y etiquetas
+                ax.set_title('Potencia Total Generada Mensualmente [kW]', fontsize=16)
+                ax.set_xlabel('Mes', fontsize=14)
+                ax.set_ylabel('Potencia Total [kW]', fontsize=14)
 
-                        ax.grid(axis='y', linestyle='--', alpha=0.6)
-                        plt.tight_layout()
-                        return fig
+                # Ajustar las etiquetas del eje X para los meses
+                ax.set_xticks(range(1, 13))  # Posiciones en el eje X para 12 meses
+                ax.set_xticklabels(['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'], rotation=45)
 
-                # Mostrar las gráficas una al lado de la otra en columnas
-                col1, col2 = st.columns(2)
+                ax.grid(axis='y', linestyle='--', alpha=0.6)
+                plt.tight_layout()
+                return fig
 
-                with col1:
-                    # Mostrar la opción para seleccionar la visualización de la temperatura
-                    opcion_temperatura = st.radio("Selecciona cómo mostrar la temperatura", ("Por Día", "Por Mes"), key="temperatura_radio")
-                    fig_temperatura = grafica_temperatura(opcion_temperatura)
-                    st.pyplot(fig_temperatura)
+        # Mostrar las gráficas una al lado de la otra en columnas
+        col1, col2 = st.columns(2)
 
-                    # Botón de descarga para la gráfica de temperatura
-                    buf = io.BytesIO()
-                    fig_temperatura.savefig(buf, format="png")
-                    buf.seek(0)
-                    st.download_button("Descargar gráfica de Temperatura", buf, "grafica_temperatura.png", "image/png")
+        with col1:
+            # Mostrar la opción para seleccionar la visualización de la temperatura
+            opcion_temperatura = st.radio("Selecciona cómo mostrar la temperatura", ("Por Día", "Por Mes"), key="temperatura_radio")
+            fig_temperatura = grafica_temperatura(opcion_temperatura)
+            st.pyplot(fig_temperatura)
 
-                with col2:
-                    # Mostrar la opción para seleccionar la visualización de la potencia
-                    opcion_potencia = st.radio("Selecciona cómo mostrar la potencia", ("Por Día", "Por Mes"), key="potencia_radio")
-                    fig_potencia = grafica_potencia(opcion_potencia)
-                    st.pyplot(fig_potencia)
+            # Botón de descarga para la gráfica de temperatura
+            buf = io.BytesIO()
+            fig_temperatura.savefig(buf, format="png")
+            buf.seek(0)
+            st.download_button("Descargar gráfica de Temperatura", buf, "grafica_temperatura.png", "image/png")
 
-                    # Botón de descarga para la gráfica de potencia
-                    buf = io.BytesIO()
-                    fig_potencia.savefig(buf, format="png")
-                    buf.seek(0)
-                    st.download_button("Descargar gráfica de Potencia", buf, "grafica_potencia.png", "image/png")
+        with col2:
+            # Mostrar la opción para seleccionar la visualización de la potencia
+            opcion_potencia = st.radio("Selecciona cómo mostrar la potencia", ("Por Día", "Por Mes"), key="potencia_radio")
+            fig_potencia = grafica_potencia(opcion_potencia)
+            st.pyplot(fig_potencia)
+
+            # Botón de descarga para la gráfica de potencia
+            buf = io.BytesIO()
+            fig_potencia.savefig(buf, format="png")
+            buf.seek(0)
+            st.download_button("Descargar gráfica de Potencia", buf, "grafica_potencia.png", "image/png")
 
             
 # Estado de la sesión para manejar la visibilidad de la información
