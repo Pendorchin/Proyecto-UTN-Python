@@ -428,16 +428,16 @@ if archivo is not None:
 if 'mostrar_info' not in st.session_state:
     st.session_state.mostrar_info = False
 
-if st.button("Más información"):
+if st.button("Más información de Nosotros"):
     st.session_state.mostrar_info = not st.session_state.mostrar_info
 
 if st.session_state.mostrar_info:
     st.text_area(
         label="Información adicional",
         value="""
-        Desarrolladores: Cisera Santino & Stangafero Eric.
-        Correo de contacto: santinociseraa@gmail.com
-        Número de contacto: 3425328666
+        Desarrolladores: Cisera Santino y Stangafero Eric.
+        Correo de contacto: santinociseraa@gmail.com / edstangafe@gmail.com
+        Número de contacto: 3425328666 / 3425950884
         """,
         height=150
     )
