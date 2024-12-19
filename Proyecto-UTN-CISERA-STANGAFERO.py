@@ -15,28 +15,23 @@ col1, col2 = st.columns([7, 1])
 with col2:
     st.image("logoutn.jpg", width=500)  # imagen utn
 
+#marco teorico 
 st.title("Simulador de Generación Fotovoltaica")
 """Esta aplicación fue desarrollada para analizar datos climatológicos de la ciudad de Santa Fe con el objetivo de estimar la potencia generada 
 por un generador fotovoltaico, basado en el modelo matemático descrito en el proyecto."""
-
 st.markdown("### Marco teórico")
-
-
 st.markdown("""
 La creciente demanda energética y el impacto ambiental asociado a las fuentes convencionales de energía han impulsado el desarrollo de soluciones sostenibles, 
 como la energía fotovoltaica. Los **sistemas de generación fotovoltaica (GFV)** destacan por su capacidad de transformar la energía solar en electricidad 
 de manera limpia y eficiente. Este marco teórico describe los fundamentos, modelos matemáticos y características de los sistemas fotovoltaicos, 
 aplicados al proyecto de simulación desarrollado con Streamlit.
 """)
-
-# Fundamentos de la Energía Fotovoltaica
 st.header("1. Fundamentos de la Energía Fotovoltaica")
 st.markdown("""
 Un **generador fotovoltaico (GFV)** convierte la radiación solar en electricidad mediante módulos solares, configurados en serie o paralelo según las necesidades.
 El sistema se complementa con un controlador-inversor que estabiliza la energía y la convierte de corriente continua (CC) a corriente alterna (CA), adecuada para
 su uso en redes eléctricas. El siguiente esquema describe el sistema:
 """)
-# Modelo Matemático
 st.header("2. Modelo Matemático para el Cálculo de Potencia")
 st.markdown("""
 La potencia eléctrica generada por un GFV puede calcularse mediante la siguiente ecuación:
@@ -44,9 +39,7 @@ La potencia eléctrica generada por un GFV puede calcularse mediante la siguient
 st.latex(r"""
 P \, [\text{kW}] = N \cdot \frac{G}{G_{std}} \cdot P_{pico} \cdot \left[ 1 + k_p \cdot (T_c - T_r) \right] \cdot \eta \cdot 10^{-3}
 """)
-
 st.markdown("### **Donde:**", unsafe_allow_html=True)
-
 st.markdown("""
 <style>
 .param-title {
@@ -69,8 +62,6 @@ st.markdown("""
 - <span class="param-title">η</span>: Rendimiento global del sistema <span class="unit">0.97</span>.
 """, unsafe_allow_html=True)
 
-
-# Estimación de la Temperatura de la Celda
 st.header("3. Estimación de la Temperatura de la Celda")
 st.markdown("""
 La temperatura de las celdas fotovoltaicas **Tc** se puede estimar a partir de la temperatura ambiente **Ta** y la irradiancia incidente **G**, 
@@ -79,17 +70,13 @@ según la siguiente fórmula:
 st.latex(r"""
 T_c = T_a + 0.031 \cdot G
 """)
-
 st.markdown("""
 Este modelo simplificado es válido en condiciones de viento nulo y asume que la radiación incrementa la temperatura de los módulos de manera proporcional.
 """)
-
-# Límites de Generación
 st.header("4. Límites de Generación del GFV")
 st.markdown("""
 La potencia generada por el GFV está restringida por límites superiores e inferiores. Estos límites se expresan como:
 """)
-
 st.subheader("4.1 Límite Inferior")
 st.markdown("""
 La potencia generada debe superar un umbral mínimo para que el inversor funcione correctamente:
@@ -97,7 +84,6 @@ La potencia generada debe superar un umbral mínimo para que el inversor funcion
 st.latex(r"""
 P_{\text{mín}} = \frac{\mu}{100} \cdot P_{\text{inv}}
 """)
-
 st.subheader("4.2 Límite Superior")
 st.markdown("""
 La potencia máxima está limitada por la capacidad nominal del inversor. La potencia entregada **Pr** se calcula como:
@@ -110,8 +96,6 @@ P & \text{si } P_{\text{mín}} < P \leq P_{\text{inv}} \\
 P_{\text{inv}} & \text{si } P > P_{\text{inv}}
 \end{cases}
 """)
-
-# Características del GFV de la UTN Santa Fe
 st.header("5. Características del GFV de la UTN Santa Fe")
 st.markdown("""
 El generador fotovoltaico de la Facultad Regional Santa Fe está compuesto por los siguientes elementos:
@@ -121,8 +105,6 @@ El generador fotovoltaico de la Facultad Regional Santa Fe está compuesto por l
 
 El GFV compensa parcialmente el consumo eléctrico de la facultad y, en circunstancias de baja demanda, puede inyectar excedentes a la red eléctrica.
 """, unsafe_allow_html=True)
-
-# Datos Climatológicos
 st.header("6. Datos Climatológicos")
 st.markdown("""
 Los datos utilizados en este proyecto provienen de registros del Centro de Información Meteorológica (CIM) de la Universidad Nacional del Litoral (UNL). 
@@ -132,8 +114,6 @@ Estos datos incluyen:
 
 Las mediciones se realizaron a intervalos de 10 minutos durante todo el año 2019, proporcionando información detallada para la simulación.
 """, unsafe_allow_html=True)
-
-# Relevancia del Proyecto
 st.header("7. Relevancia del Proyecto")
 st.markdown("""
 Este marco teórico sirve como base para el desarrollo de una herramienta interactiva que utiliza **Streamlit** para simular la generación fotovoltaica. 
@@ -146,11 +126,9 @@ Esta simulación es útil para entender el comportamiento de un GFV y evaluar su
 """)
 
 
-### BARRA LATERAL
-
+# sidebar
 st.sidebar.title("Configuración del Generador Fotovoltaico")
-
-# Parámetros del generador
+# parametros
 N = st.sidebar.number_input("Número de paneles (N)",
                             min_value=0.0,
                             value=12.0,
@@ -198,10 +176,8 @@ mu = st.sidebar.slider("Porcentaje de umbral mínimo %",
 
 Pmin = mu / 100 * Pinv
 st.sidebar.text(f"Potencia del Inversor Mínima: {Pmin}(kW)")
-
-# Cálculo de la potencia generada
+# potencia generada
 P = N * (Gstd / 1000) * Ppico * (1 + kp * (Tc - Tr)) * eta * 1e-3
-
 st.sidebar.markdown(f"""
     <div style='font-size: 24px; color: #ff6347; font-weight: bold; 
                 padding: 20px; border: 2px solid #ff6347; 
@@ -216,7 +192,6 @@ st.sidebar.markdown(f"""
     
 """, unsafe_allow_html=True)
 
-
 # elección de qué archivo se usa
 opcion = st.radio(
     "Selecciona una opción:",
@@ -227,10 +202,9 @@ if opcion == "Usar archivo preestablecido": #seleccionador de archivo
     archivo = pd.read_excel("Datos_climatologicos_Santa_Fe_2019.xlsx")
     st.success("Usando el archivo preestablecido.")
 else:
-    # Mostrar widget para subir archivo
+    # widget para subir archivo
     archivo_cargado = st.file_uploader("Sube un archivo Excel", type=["xlsx", "xls"])
     if archivo_cargado is not None:
-        # Leer el archivo cargado
         archivo = pd.read_excel(archivo_cargado)
         st.success("Archivo cargado con éxito!")
     else:
@@ -239,38 +213,31 @@ else:
 
 archivo['Tc (°C)'] = archivo['Temperatura (°C)'] + 0.031 * archivo['Irradiancia (W/m²)']
 
-# Cálculo de potencia generada (kW)
+# potencia generada
 archivo['Potencia (kW)'] = (N * (archivo['Irradiancia (W/m²)'] / Gstd) * 
                             Ppico * (1 + kp * (archivo['Tc (°C)'] - Tr)) * eta * 1e-3)
 
-# Aplicar límites a la potencia generada
+# rango de la potencia generada
 archivo['Potencia (kW)'] = np.where(
-    archivo['Potencia (kW)'] <= Pmin, 0,  # Si P <= Pmin -> 0
+    archivo['Potencia (kW)'] <= Pmin, 0,  
     np.where(archivo['Potencia (kW)'] <= Pinv, archivo['Potencia (kW)'], Pinv)
 )
-
 st.write("Tabla con valores de Tc y Potencia Calculados:")
 st.dataframe(archivo, width=1400, hide_index=True)
 
-
+# graficas
 st.markdown("## Gráficas")
-### GRÁFICAS
-
-# columna 'Fecha' esté en formato datetime
 archivo['Fecha'] = pd.to_datetime(archivo['Fecha'])
 
-# Extraer el mes de la fecha
 archivo['Mes'] = archivo['Fecha'].dt.month
-
-# Función para graficar la temperatura
 def grafica_temperatura(opcion):
     if opcion == 'Por Día':
-        # Agrupar por día y calcular el promedio de la temperatura
+        # calcular el promedio por dia
         archivo['Fecha Sola'] = archivo['Fecha'].dt.date
         promedio_por_dia = archivo.groupby('Fecha Sola')['Temperatura (°C)'].mean().reset_index()
         promedio_por_dia.columns = ['Fecha', 'Promedio Temperatura (°C)']
         
-        # Crear la gráfica de temperatura
+        # crear la gráfica
         fig, ax = plt.subplots(figsize=(12, 6))
         ax.plot(promedio_por_dia['Fecha'], promedio_por_dia['Promedio Temperatura (°C)'], 
                 color='blue', label="Temperatura", marker="o", markersize=3)
@@ -284,11 +251,11 @@ def grafica_temperatura(opcion):
         return fig
     
     elif opcion == 'Por Mes':
-        # Agrupar por mes y calcular el promedio de la temperatura
+        # agrupar por mes y calcular el promedio de la temperatura
         archivo['Mes'] = archivo['Fecha'].dt.month
         promedio_por_mes = archivo.groupby('Mes')['Temperatura (°C)'].mean().reset_index()
         
-        # Crear la gráfica de temperatura por mes
+        # crear la gráfica
         fig, ax = plt.subplots(figsize=(12, 6))
         ax.plot(promedio_por_mes['Mes'], promedio_por_mes['Temperatura (°C)'], 
                 color='blue', label="Temperatura Promedio", marker="o", markersize=5)
@@ -302,14 +269,13 @@ def grafica_temperatura(opcion):
         plt.tight_layout()
         return fig
 
-# Función para graficar la potencia total generada
 def grafica_potencia(opcion):
     if opcion == 'Por Día':
-        # Agrupar por día y calcular la potencia total generada
+        # agrupar por día y calcular la potencia total generada
         archivo['Fecha Sola'] = archivo['Fecha'].dt.date
         potencia_total_dia = archivo.groupby('Fecha Sola')['Potencia (kW)'].sum().reset_index()
         
-        # Crear la gráfica de potencia total por día
+        # crear la grafica
         fig, ax = plt.subplots(figsize=(12, 6))
         ax.plot(potencia_total_dia['Fecha Sola'], potencia_total_dia['Potencia (kW)'], 
                 color='orange', label="Potencia Total", marker="o", markersize=5)
@@ -346,7 +312,6 @@ def grafica_potencia(opcion):
         plt.tight_layout()
         return fig
 
-# Crear columnas para mostrar las gráficas una al lado de la otra
 col1, col2 = st.columns(2)
 
 # Crear botones para seleccionar cómo mostrar la temperatura
@@ -387,12 +352,12 @@ def crear_descarga(fig, nombre_archivo):
     return st.download_button(label=f"Descargar {nombre_archivo}", data=img, file_name=nombre_archivo, mime="image/png")
 
 with col1:
-    # Botón para descargar la gráfica de temperatura
+    # boton para descargar la gráfica de temperatura
     if st.button("Descargar Gráfica de Temperatura"):
         crear_descarga(fig_temperatura, "grafica_temperatura.png")
 
 with col2:
-    # Botón para descargar la gráfica de potencia
+    # boton para descargar la gráfica de potencia
     if st.button("Descargar Gráfica de Potencia"):
         crear_descarga(fig_potencia, "grafica_potencia.png")
 
@@ -400,8 +365,7 @@ st.markdown("\n")
 st.markdown("## Búsqueda por filtros")
 
 
-### FILTROS
-
+# filtros
 if archivo is not None:
     archivo['Fecha'] = pd.to_datetime(archivo['Fecha'])  # Convertir columna 'Fecha' a formato datetime
     
@@ -433,9 +397,9 @@ if archivo is not None:
     (archivo['Irradiancia (W/m²)'] <= irradiancia_filtrada[1])
     ]
 
-    # Mostrar los datos filtrados (sin columna Fecha Sola para estética)
+    # Mostrar los datos filtrados
     st.write(f"Datos filtrados de {fecha_inicio} a {fecha_fin}")
-    archivo_filtrado_mostrar = archivo_filtrado.drop(columns=['Fecha Sola','Mes'], errors='ignore')  # Ocultar columna "Fecha Sola"
+    archivo_filtrado_mostrar = archivo_filtrado.drop(columns=['Fecha Sola','Mes'], errors='ignore')  
     st.dataframe(archivo_filtrado_mostrar, width=1500, hide_index=True)
     
     # Crear opción para graficar según la selección de filtros
