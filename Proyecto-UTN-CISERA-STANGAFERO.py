@@ -201,12 +201,19 @@ st.sidebar.text(f"Potencia del Inversor Mínima: {Pmin}(kW)")
 
 # Cálculo de la potencia generada
 P = N * (Gstd / 1000) * Ppico * (1 + kp * (Tc - Tr)) * eta * 1e-3
+
 st.sidebar.markdown(f"""
     <div style='font-size: 24px; color: #ff6347; font-weight: bold; 
-                padding: 10px; border: 2px solid #ff6347; 
-                border-radius: 10px; background-color: #fff8f0;'>
-        Potencia generada: {P:.2f} kW
+                padding: 20px; border: 2px solid #ff6347; 
+                border-radius: 12px; background-color: #fff8f0; 
+                text-align: center;'>
+        Potencia Generada
+            <div style='font-size: 32px; color: #333; font-weight: bold; 
+                padding: 20px;text-align: center;'>
+        {P:.2f} kW
     </div>
+    </div>
+    
 """, unsafe_allow_html=True)
 
 
