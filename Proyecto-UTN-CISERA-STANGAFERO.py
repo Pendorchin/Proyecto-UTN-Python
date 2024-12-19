@@ -45,25 +45,37 @@ st.latex(r"""
 P \, [\text{kW}] = N \cdot \frac{G}{G_{std}} \cdot P_{pico} \cdot \left[ 1 + k_p \cdot (T_c - T_r) \right] \cdot \eta \cdot 10^{-3}
 """)
 
-st.markdown("**Donde:**")
+st.markdown("### **Donde:**", unsafe_allow_html=True)
 
-"""
-- \( G \): Irradiancia incidente (\(\text{W/m}^2\)).
-- \( G_{std} \): Irradiancia estándar (\(1000 \, \text{W/m}^2\)).
-- \( T_c \): Temperatura de la celda (\(°\text{C}\)).
-- \( T_r \): Temperatura de referencia (\(25 \, °\text{C}\)).
-- \( P_{pico} \): Potencia pico del módulo (\(240 \, \text{W}\)).
-- \( N \): Número de módulos.
-- \( k_p \): Coeficiente de temperatura-potencia (\(-0.0044 \, °\text{C}^{-1}\)).
-- \( \eta \): Rendimiento global del sistema (\(0.97\)).
-"""
+st.markdown("""
+<style>
+.param-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: black;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+- <span class="param-title">G</span>: Irradiancia incidente <span class="unit">[W/m²]</span>.
+- <span class="param-title">G<sub>std</sub></span>: Irradiancia estándar <span class="unit">1000 [W/m²]</span>.
+- <span class="param-title">T<sub>c</sub></span>: Temperatura de la celda <span class="unit">[°C]</span>.
+- <span class="param-title">T<sub>r</sub></span>: Temperatura de referencia <span class="unit">25 [°C]</span>.
+- <span class="param-title">P<sub>pico</sub></span>: Potencia pico del módulo <span class="unit">240 [W]</span>.
+- <span class="param-title">N</span>: Número de módulos.
+- <span class="param-title">k<sub>p</sub></span>: Coeficiente de temperatura-potencia <span class="unit">-0.0044 [°C⁻¹]</span>.
+- <span class="param-title">η</span>: Rendimiento global del sistema <span class="unit">0.97</span>.
+""", unsafe_allow_html=True)
+
 
 # Estimación de la Temperatura de la Celda
 st.header("3. Estimación de la Temperatura de la Celda")
 st.markdown("""
-La temperatura de las celdas fotovoltaicas (\(T_c\)) se puede estimar a partir de la temperatura ambiente (\(T_a\)) y la irradiancia incidente (\(G\)), 
+La temperatura de las celdas fotovoltaicas **Tc** se puede estimar a partir de la temperatura ambiente **Ta** y la irradiancia incidente **G**, 
 según la siguiente fórmula:
-""")
+""", unsafe_allow_html=True)
 st.latex(r"""
 T_c = T_a + 0.031 \cdot G
 """)
@@ -88,8 +100,8 @@ P_{\text{mín}} = \frac{\mu}{100} \cdot P_{\text{inv}}
 
 st.subheader("4.2 Límite Superior")
 st.markdown("""
-La potencia máxima está limitada por la capacidad nominal del inversor. La potencia entregada (\(P_r\)) se calcula como:
-""")
+La potencia máxima está limitada por la capacidad nominal del inversor. La potencia entregada **Pr** se calcula como:
+""", unsafe_allow_html=True)
 st.latex(r"""
 P_r =
 \begin{cases}
@@ -103,23 +115,23 @@ P_{\text{inv}} & \text{si } P > P_{\text{inv}}
 st.header("5. Características del GFV de la UTN Santa Fe")
 st.markdown("""
 El generador fotovoltaico de la Facultad Regional Santa Fe está compuesto por los siguientes elementos:
-- **Módulos fotovoltaicos**: \(N = 12\), con una potencia pico de \(240 \, \text{W}\) cada uno.
-- **Inversor monofásico**: Marca **SMA**, modelo **SB2.5-1VL-40**, con potencia nominal de \(2.5 \, \text{kW}\).
-- **Rendimiento global del sistema**: \(0.97\).
+- **Módulos fotovoltaicos**: **N = 12**, con una potencia pico de 240 [W] cada uno.
+- **Inversor monofásico**: Marca **SMA**, modelo **SB2.5-1VL-40**, con potencia nominal de 2.5 [kW].
+- **Rendimiento global del sistema**: 0.97.
 
 El GFV compensa parcialmente el consumo eléctrico de la facultad y, en circunstancias de baja demanda, puede inyectar excedentes a la red eléctrica.
-""")
+""", unsafe_allow_html=True)
 
 # Datos Climatológicos
 st.header("6. Datos Climatológicos")
 st.markdown("""
 Los datos utilizados en este proyecto provienen de registros del Centro de Información Meteorológica (CIM) de la Universidad Nacional del Litoral (UNL). 
 Estos datos incluyen:
-- **Temperatura ambiente (\(T_a\))**.
-- **Irradiancia solar (\(G\))**.
+- **Temperatura ambiente (Ta)**: °C.
+- **Irradiancia solar (G)**: W/m².
 
 Las mediciones se realizaron a intervalos de 10 minutos durante todo el año 2019, proporcionando información detallada para la simulación.
-""")
+""", unsafe_allow_html=True)
 
 # Relevancia del Proyecto
 st.header("7. Relevancia del Proyecto")
@@ -133,14 +145,6 @@ La interfaz permite:
 Esta simulación es útil para entender el comportamiento de un GFV y evaluar su rendimiento en diferentes condiciones meteorológicas.
 """)
 
-
-st.latex(r"P \, (kW) = N \cdot \frac{G}{G_{std}} \cdot P_{pico} \cdot \left[ 1 + k_p \cdot (T_c - T_r) \right] \cdot \eta \cdot 10^{-3}")
-st.latex(r"E \, [kWh] = \int P(t) \, dt")
-st.latex(r"\eta_{sistema} = \eta_{panel} \cdot \eta_{inversor} \cdot \eta_{cables}")
-st.latex(r"T_c = T_{a} + \frac{G}{G_{std}} \cdot \Delta T")
-st.latex(r"I = \frac{P}{V} \quad \text{(Intensidad de corriente)}")
-st.latex(r"V = \frac{P}{I} \quad \text{(Voltaje)}")
-st.latex(r"PR = \frac{E_{real}}{E_{teorica}} \cdot 100 \% \quad \text{(Performance Ratio)}")
 
 ### BARRA LATERAL
 
@@ -245,7 +249,7 @@ st.dataframe(archivo, width=1400, hide_index=True)
 st.markdown("## Gráficas")
 ### GRÁFICAS
 
-# Asegúrate de que la columna 'Fecha' esté en formato datetime
+# columna 'Fecha' esté en formato datetime
 archivo['Fecha'] = pd.to_datetime(archivo['Fecha'])
 
 # Extraer el mes de la fecha
@@ -255,8 +259,8 @@ archivo['Mes'] = archivo['Fecha'].dt.month
 def grafica_temperatura(opcion):
     if opcion == 'Por Día':
         # Agrupar por día y calcular el promedio de la temperatura
-        archivo['Fecha_Solo'] = archivo['Fecha'].dt.date
-        promedio_por_dia = archivo.groupby('Fecha_Solo')['Temperatura (°C)'].mean().reset_index()
+        archivo['Fecha Sola'] = archivo['Fecha'].dt.date
+        promedio_por_dia = archivo.groupby('Fecha Sola')['Temperatura (°C)'].mean().reset_index()
         promedio_por_dia.columns = ['Fecha', 'Promedio Temperatura (°C)']
         
         # Crear la gráfica de temperatura
@@ -295,12 +299,12 @@ def grafica_temperatura(opcion):
 def grafica_potencia(opcion):
     if opcion == 'Por Día':
         # Agrupar por día y calcular la potencia total generada
-        archivo['Fecha_Solo'] = archivo['Fecha'].dt.date
-        potencia_total_dia = archivo.groupby('Fecha_Solo')['Potencia (kW)'].sum().reset_index()
+        archivo['Fecha Sola'] = archivo['Fecha'].dt.date
+        potencia_total_dia = archivo.groupby('Fecha Sola')['Potencia (kW)'].sum().reset_index()
         
         # Crear la gráfica de potencia total por día
         fig, ax = plt.subplots(figsize=(12, 6))
-        ax.plot(potencia_total_dia['Fecha_Solo'], potencia_total_dia['Potencia (kW)'], 
+        ax.plot(potencia_total_dia['Fecha Sola'], potencia_total_dia['Potencia (kW)'], 
                 color='orange', label="Potencia Total", marker="o", markersize=5)
         ax.set_title('Potencia Total Generada por Día', fontsize=16)
         ax.set_xlabel('Fecha', fontsize=14)
@@ -387,6 +391,8 @@ with col2:
 
 st.markdown("\n")
 st.markdown("## Búsqueda por filtros")
+
+
 ### FILTROS
 
 if archivo is not None:
@@ -412,17 +418,18 @@ if archivo is not None:
     
     # Filtrar los datos según las selecciones de fecha, temperatura e irradiancia
     archivo_filtrado = archivo[
-        (archivo['Fecha'].dt.date >= fecha_inicio) & 
-        (archivo['Fecha'].dt.date <= fecha_fin) & 
-        (archivo['Temperatura (°C)'] >= temperatura_filtrada[0]) &
-        (archivo['Temperatura (°C)'] <= temperatura_filtrada[1]) &
-        (archivo['Irradiancia (W/m²)'] >= irradiancia_filtrada[0]) &
-        (archivo['Irradiancia (W/m²)'] <= irradiancia_filtrada[1])
+    (archivo['Fecha'].dt.date >= fecha_inicio) & 
+    (archivo['Fecha'].dt.date <= fecha_fin) & 
+    (archivo['Temperatura (°C)'] >= temperatura_filtrada[0]) &
+    (archivo['Temperatura (°C)'] <= temperatura_filtrada[1]) &
+    (archivo['Irradiancia (W/m²)'] >= irradiancia_filtrada[0]) &
+    (archivo['Irradiancia (W/m²)'] <= irradiancia_filtrada[1])
     ]
-    
-    # Mostrar los datos filtrados
+
+    # Mostrar los datos filtrados (sin columna Fecha Sola para estética)
     st.write(f"Datos filtrados de {fecha_inicio} a {fecha_fin}")
-    st.dataframe(archivo_filtrado, width=1500, hide_index=True)
+    archivo_filtrado_mostrar = archivo_filtrado.drop(columns=['Fecha Sola','Mes'], errors='ignore')  # Ocultar columna "Fecha Sola"
+    st.dataframe(archivo_filtrado_mostrar, width=1500, hide_index=True)
     
     # Crear opción para graficar según la selección de filtros
     if not archivo_filtrado.empty:
@@ -430,8 +437,8 @@ if archivo is not None:
         def grafica_temperatura(opcion):
             if opcion == 'Por Día':
                 # Agrupar por día y calcular el promedio de la temperatura
-                archivo_filtrado['Fecha_Solo'] = archivo_filtrado['Fecha'].dt.date
-                promedio_por_dia = archivo_filtrado.groupby('Fecha_Solo')['Temperatura (°C)'].mean().reset_index()
+                archivo_filtrado['Fecha Sola'] = archivo_filtrado['Fecha'].dt.date
+                promedio_por_dia = archivo_filtrado.groupby('Fecha Sola')['Temperatura (°C)'].mean().reset_index()
                 promedio_por_dia.columns = ['Fecha', 'Promedio Temperatura (°C)']
                 
                 # Crear la gráfica de temperatura
@@ -470,12 +477,12 @@ if archivo is not None:
         def grafica_potencia(opcion):
             if opcion == 'Por Día':
                 # Agrupar por día y calcular la potencia total generada
-                archivo_filtrado['Fecha_Solo'] = archivo_filtrado['Fecha'].dt.date
-                potencia_total_dia = archivo_filtrado.groupby('Fecha_Solo')['Potencia (kW)'].sum().reset_index()
+                archivo_filtrado['Fecha Sola'] = archivo_filtrado['Fecha'].dt.date
+                potencia_total_dia = archivo_filtrado.groupby('Fecha Sola')['Potencia (kW)'].sum().reset_index()
                 
                 # Crear la gráfica de potencia total por día
                 fig, ax = plt.subplots(figsize=(12, 6))
-                ax.plot(potencia_total_dia['Fecha_Solo'], potencia_total_dia['Potencia (kW)'], 
+                ax.plot(potencia_total_dia['Fecha Sola'], potencia_total_dia['Potencia (kW)'], 
                         color='orange', label="Potencia Total", marker="o", markersize=5)
                 ax.set_title('Potencia Total Generada por Día', fontsize=16)
                 ax.set_xlabel('Fecha', fontsize=14)
