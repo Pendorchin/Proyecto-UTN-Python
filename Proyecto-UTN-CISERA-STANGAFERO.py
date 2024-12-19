@@ -10,10 +10,124 @@ with col2:
     st.image("logoutn.jpg", width=500)  # imagen utn
 
 st.title("Simulador de Generación Fotovoltaica")
-"""Esta aplicación utiliza datos climatológicos de Santa Fe para estimar la potencia generada 
+"""Esta aplicación fue desarrollada para analizar datos climatológicos de la ciudad de Santa Fe con el objetivo de estimar la potencia generada 
 por un generador fotovoltaico, basado en el modelo matemático descrito en el proyecto."""
 
-st.markdown("### Ecuaciones Matemáticas del Proyecto")
+st.markdown("### Marco teórico")
+
+
+st.markdown("""
+La creciente demanda energética y el impacto ambiental asociado a las fuentes convencionales de energía han impulsado el desarrollo de soluciones sostenibles, 
+como la energía fotovoltaica. Los **sistemas de generación fotovoltaica (GFV)** destacan por su capacidad de transformar la energía solar en electricidad 
+de manera limpia y eficiente. Este marco teórico describe los fundamentos, modelos matemáticos y características de los sistemas fotovoltaicos, 
+aplicados al proyecto de simulación desarrollado con Streamlit.
+""")
+
+# Fundamentos de la Energía Fotovoltaica
+st.header("1. Fundamentos de la Energía Fotovoltaica")
+st.markdown("""
+Un **generador fotovoltaico (GFV)** convierte la radiación solar en electricidad mediante módulos solares, configurados en serie o paralelo según las necesidades.
+El sistema se complementa con un controlador-inversor que estabiliza la energía y la convierte de corriente continua (CC) a corriente alterna (CA), adecuada para
+su uso en redes eléctricas. El siguiente esquema describe el sistema:
+""")
+# Modelo Matemático
+st.header("2. Modelo Matemático para el Cálculo de Potencia")
+st.markdown("""
+La potencia eléctrica generada por un GFV puede calcularse mediante la siguiente ecuación:
+""")
+st.latex(r"""
+P \, [\text{kW}] = N \cdot \frac{G}{G_{std}} \cdot P_{pico} \cdot \left[ 1 + k_p \cdot (T_c - T_r) \right] \cdot \eta \cdot 10^{-3}
+""")
+
+st.markdown("**Donde:**")
+
+"""
+- \( G \): Irradiancia incidente (\(\text{W/m}^2\)).
+- \( G_{std} \): Irradiancia estándar (\(1000 \, \text{W/m}^2\)).
+- \( T_c \): Temperatura de la celda (\(°\text{C}\)).
+- \( T_r \): Temperatura de referencia (\(25 \, °\text{C}\)).
+- \( P_{pico} \): Potencia pico del módulo (\(240 \, \text{W}\)).
+- \( N \): Número de módulos.
+- \( k_p \): Coeficiente de temperatura-potencia (\(-0.0044 \, °\text{C}^{-1}\)).
+- \( \eta \): Rendimiento global del sistema (\(0.97\)).
+"""
+
+# Estimación de la Temperatura de la Celda
+st.header("3. Estimación de la Temperatura de la Celda")
+st.markdown("""
+La temperatura de las celdas fotovoltaicas (\(T_c\)) se puede estimar a partir de la temperatura ambiente (\(T_a\)) y la irradiancia incidente (\(G\)), 
+según la siguiente fórmula:
+""")
+st.latex(r"""
+T_c = T_a + 0.031 \cdot G
+""")
+
+st.markdown("""
+Este modelo simplificado es válido en condiciones de viento nulo y asume que la radiación incrementa la temperatura de los módulos de manera proporcional.
+""")
+
+# Límites de Generación
+st.header("4. Límites de Generación del GFV")
+st.markdown("""
+La potencia generada por el GFV está restringida por límites superiores e inferiores. Estos límites se expresan como:
+""")
+
+st.subheader("4.1 Límite Inferior")
+st.markdown("""
+La potencia generada debe superar un umbral mínimo para que el inversor funcione correctamente:
+""")
+st.latex(r"""
+P_{\text{mín}} = \frac{\mu}{100} \cdot P_{\text{inv}}
+""")
+
+st.subheader("4.2 Límite Superior")
+st.markdown("""
+La potencia máxima está limitada por la capacidad nominal del inversor. La potencia entregada (\(P_r\)) se calcula como:
+""")
+st.latex(r"""
+P_r =
+\begin{cases}
+0 & \text{si } P \leq P_{\text{mín}} \\
+P & \text{si } P_{\text{mín}} < P \leq P_{\text{inv}} \\
+P_{\text{inv}} & \text{si } P > P_{\text{inv}}
+\end{cases}
+""")
+
+# Características del GFV de la UTN Santa Fe
+st.header("5. Características del GFV de la UTN Santa Fe")
+st.markdown("""
+El generador fotovoltaico de la Facultad Regional Santa Fe está compuesto por los siguientes elementos:
+- **Módulos fotovoltaicos**: \(N = 12\), con una potencia pico de \(240 \, \text{W}\) cada uno.
+- **Inversor monofásico**: Marca **SMA**, modelo **SB2.5-1VL-40**, con potencia nominal de \(2.5 \, \text{kW}\).
+- **Rendimiento global del sistema**: \(0.97\).
+
+El GFV compensa parcialmente el consumo eléctrico de la facultad y, en circunstancias de baja demanda, puede inyectar excedentes a la red eléctrica.
+""")
+
+# Datos Climatológicos
+st.header("6. Datos Climatológicos")
+st.markdown("""
+Los datos utilizados en este proyecto provienen de registros del Centro de Información Meteorológica (CIM) de la Universidad Nacional del Litoral (UNL). 
+Estos datos incluyen:
+- **Temperatura ambiente (\(T_a\))**.
+- **Irradiancia solar (\(G\))**.
+
+Las mediciones se realizaron a intervalos de 10 minutos durante todo el año 2019, proporcionando información detallada para la simulación.
+""")
+
+# Relevancia del Proyecto
+st.header("7. Relevancia del Proyecto")
+st.markdown("""
+Este marco teórico sirve como base para el desarrollo de una herramienta interactiva que utiliza **Streamlit** para simular la generación fotovoltaica. 
+La interfaz permite:
+- Visualizar tablas dinámicas con datos climatológicos.
+- Analizar gráficos de la potencia generada y su relación con variables como la irradiancia y la temperatura.
+- Configurar parámetros del GFV de forma interactiva, como el número de paneles y la eficiencia del sistema.
+
+Esta simulación es útil para entender el comportamiento de un GFV y evaluar su rendimiento en diferentes condiciones meteorológicas.
+""")
+
+
 st.latex(r"P \, (kW) = N \cdot \frac{G}{G_{std}} \cdot P_{pico} \cdot \left[ 1 + k_p \cdot (T_c - T_r) \right] \cdot \eta \cdot 10^{-3}")
 st.latex(r"E \, [kWh] = \int P(t) \, dt")
 st.latex(r"\eta_{sistema} = \eta_{panel} \cdot \eta_{inversor} \cdot \eta_{cables}")
@@ -47,10 +161,11 @@ Pinv = st.sidebar.slider("Potencia nominal del inversor (Pinv) [kW]",
                             value=2.5,
                             step=0.5)
 kp = st.sidebar.number_input("Coeficiente temperatura-potencia (kp) [°C⁻¹]",
-                            min_value=-0.007,
-                            max_value=-0.001,
+                            min_value=-1.0,
+                            max_value=1.0,
                             value=-0.0044,
-                            step=0.0001)
+                            step=0.0001,
+                            format="%.4f")
 Tr = st.sidebar.number_input("Temperatura de referencia o ambiente (Tr) [°C]",
                             min_value=-50.0,
                             max_value=50.0,
@@ -66,8 +181,8 @@ eta = st.sidebar.slider("Rendimiento global (η)",
                             value=0.97,
                             step=0.01)
 mu = st.sidebar.slider("Porcentaje de umbral mínimo %",
-                            min_value=10.0,
-                            max_value=40.0,
+                            min_value=1.0,
+                            max_value=100.0,
                             value=25.0,
                             step=1.0)
 
@@ -75,7 +190,7 @@ Pmin = mu / 100 * Pinv
 st.sidebar.text(f"Potencia del Inversor Mínima: {Pmin}(kW)")
 
 # Cálculo de la potencia generada
-P = N * (Gstd / Pinv) * Ppico * (1 + kp * (Tc - Tr)) * eta * 1e-3
+P = N * (Gstd / 1000) * Ppico * (1 + kp * (Tc - Tr)) * eta * 1e-3
 st.sidebar.markdown(f"""
     <div style='font-size: 24px; color: #ff6347; font-weight: bold; 
                 padding: 10px; border: 2px solid #ff6347; 
@@ -105,14 +220,6 @@ else:
         archivo = None
         st.warning("Por favor, suba un archivo para continuar.")
 
-if archivo is not None:
-    st.write("Vista previa de los datos:")
-
-    # Mostrar la tabla sin la columna de índice
-    st.dataframe(archivo, width=500, hide_index=True)
-    #archivo_html = archivo.to_html(index=False)
-    #st.markdown(f'<div style="display: flex; justify-content: center;">{archivo_html}</div>', unsafe_allow_html=True)
-
 archivo['Tc (°C)'] = archivo['Temperatura (°C)'] + 0.031 * archivo['Irradiancia (W/m²)']
 
 # Cálculo de potencia generada (kW)
@@ -129,7 +236,7 @@ st.write("Tabla con valores de Tc y Potencia Calculados:")
 st.dataframe(archivo, width=1400, hide_index=True)
 
 
-
+st.markdown("## Gráficas")
 ### GRÁFICAS
 
 # Asegúrate de que la columna 'Fecha' esté en formato datetime
@@ -272,8 +379,8 @@ with col2:
     if st.button("Descargar Gráfica de Potencia"):
         crear_descarga(fig_potencia, "grafica_potencia.png")
 
-
-
+st.markdown("\n")
+st.markdown("## Búsqueda por filtros")
 ### FILTROS
 
 if archivo is not None:
