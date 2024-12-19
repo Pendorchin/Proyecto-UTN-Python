@@ -4,6 +4,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 import io
 
+"""
+Website: https://proyecto-utn-python-3nzfrffrkanjggaqrmsba3.streamlit.app
+
+streamlit run Proyecto-UTN-CISERA-STANGAFERO.py
+"""
+
 st.set_page_config(page_title="Proyecto Final", layout="wide")  # nombre que aparece arriba
 col1, col2 = st.columns([7, 1])
 with col2:
